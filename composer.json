@@ -1,0 +1,21 @@
+{
+    "name": "sebkay/wp-queued-jobs",
+    "description": "A Laravel-like queue system for WordPress.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "WpQueuedJobs\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Seb Kay",
+            "email": "seb@sebkay.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {},
+    "config": {
+        "sort-packages": true
+    }
+}
