@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "WpQueuedJobs\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "authors": [
         {
@@ -13,8 +16,12 @@
             "email": "seb@sebkay.com"
         }
     ],
-    "require": {},
-    "require-dev": {},
+    "require": {
+        "php": "^7.3|^8.0"
+    },
+    "require-dev": {
+        "spatie/ray": "^1.34"
+    },
     "config": {
         "sort-packages": true
     }
