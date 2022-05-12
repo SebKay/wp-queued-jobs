@@ -39,11 +39,25 @@ class App
         }
     }
 
+    protected function getDefaultQueue()
+    {
+        return $this->getQueue($this->defaultQueue);
+    }
+
     public function addJob(string $class_name)
     {
         $this
-            ->getQueue($this->defaultQueue)
+            ->getDefaultQueue()
             ->addJob($class_name);
+
+        return $this;
+    }
+
+    public function dispatch()
+    {
+        $this
+            ->getDefaultQueue()
+            ->dispatch();
 
         return $this;
     }
@@ -51,9 +65,7 @@ class App
     public function run()
     {
         foreach ($this->queues as $queue) {
-            if ($queue->hasJobs()) {
-                $queue->run();
-            }
+            $queue->run();
         }
     }
 }
