@@ -2,17 +2,25 @@
 
 namespace WpQueuedJobs\Queues;
 
+use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Jobs\Job;
 
 class Queue
 {
     public string $name;
-    protected array $jobs           = [];
-    protected array $dispatchedJobs = [];
+    protected array $jobs = [];
 
-    public function __construct(string $name)
+    protected Connection $connection;
+
+    public function __construct(string $name, Connection $connection)
     {
-        $this->name = $name;
+        $this->name       = $name;
+        $this->connection = $connection;
+    }
+
+    public function setConnection(Connection $connection)
+    {
+        $this->connection = $connection;
     }
 
     public function addJob(string $class_name)
@@ -29,15 +37,10 @@ class Queue
         return !empty($this->jobs);
     }
 
-    public function hasDispatchedJobs()
-    {
-        return !empty($this->dispatchedJobs);
-    }
-
     public function dispatch()
     {
         foreach ($this->jobs as $job_key => $job) {
-            $this->dispatchedJobs[] = $job;
+            $this->connection->saveJob($job);
 
             unset($this->jobs[$job_key]);
         }
@@ -45,13 +48,13 @@ class Queue
 
     public function run()
     {
-        if (!$this->hasDispatchedJobs()) {
+        if (!$this->connection->hasJobs()) {
             return;
         }
 
         \ray('Running jobs in queue: ' . $this->name);
 
-        foreach ($this->dispatchedJobs as $job) {
+        foreach ($this->connection->getJobs() as $job) {
             $job->handle();
         }
 

@@ -2,6 +2,8 @@
 
 namespace WpQueuedJobs;
 
+use WpQueuedJobs\Connections\ArrayConnection;
+use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
 
 class App
@@ -15,13 +17,13 @@ class App
 
     public function __construct()
     {
-        $this->queues[] = new Queue($this->defaultQueue);
+        $this->queues[] = new Queue($this->defaultQueue, new ArrayConnection());
     }
 
-    public function addQueue(string $name)
+    public function addQueue(string $name, Connection $connection)
     {
         if ($name !== $this->defaultQueue) {
-            $this->queues[] = new Queue($name);
+            $this->queues[] = new Queue($name, $connection);
         }
 
         return $this;
