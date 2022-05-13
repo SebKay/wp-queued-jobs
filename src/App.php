@@ -3,6 +3,7 @@
 namespace WpQueuedJobs;
 
 use WpQueuedJobs\Connections\ArrayConnection;
+use WpQueuedJobs\Connections\WordPressConnection;
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
 
@@ -17,7 +18,7 @@ class App
 
     public function __construct()
     {
-        $this->queues[] = new Queue($this->defaultQueue, new ArrayConnection());
+        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
     }
 
     public function addQueue(string $name, Connection $connection)

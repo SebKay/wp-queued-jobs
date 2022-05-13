@@ -56,6 +56,8 @@ class Queue
 
         foreach ($this->connection->getJobs() as $job) {
             $job->handle();
+
+            $this->connection->clearJob($job->getUuid());
         }
 
         \ray('Finished running jobs in queue: ' . $this->name);

@@ -11,4 +11,8 @@ interface Connection
     public function getJobs();
 
     public function hasJobs();
+
+    public function clearJob(string $uuid);
+
+    public function clearJobs();
 }

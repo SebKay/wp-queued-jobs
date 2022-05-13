@@ -2,16 +2,15 @@
 
 namespace WpQueuedJobs\Connections;
 
-use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Jobs\Job;
 
-class ArrayConnection implements Connection
+class ArrayConnection extends Connection
 {
     protected array $jobs = [];
 
-    public function saveJob(Job $jobs)
+    public function saveJob(Job $job)
     {
-        $this->jobs[] = $jobs;
+        $this->jobs[] = $job;
     }
 
     public function getJobs()
@@ -19,8 +18,17 @@ class ArrayConnection implements Connection
         return $this->jobs;
     }
 
-    public function hasJobs()
+    public function clearJob(string $uuid)
     {
-        return !empty($this->jobs);
+        $jobs = parent::clearJob($uuid);
+
+        $this->jobs = $jobs;
+
+        return $jobs;
+    }
+
+    public function clearJobs()
+    {
+        $this->jobs = [];
     }
 }
