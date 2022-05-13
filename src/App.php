@@ -2,7 +2,6 @@
 
 namespace WpQueuedJobs;
 
-use WpQueuedJobs\Connections\ArrayConnection;
 use WpQueuedJobs\Connections\WordPressConnection;
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
@@ -19,6 +18,32 @@ class App
     public function __construct()
     {
         $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
+
+        $this->setupWpCron();
+    }
+
+    protected function setupWpCron()
+    {
+        \add_filter('cron_schedules', function ($schedules) {
+            $schedules['five_minutes'] = [
+                'interval' => 300,
+                'display'  => 'Every Five Minutes',
+            ];
+
+            return $schedules;
+        });
+
+        \add_action('wpj_run_queues', function () {
+            $this->run();
+        });
+
+        if (!\wp_next_scheduled('wpj_run_queues')) {
+            \wp_schedule_event(
+                \strtotime('+ 5 minutes'),
+                'five_minutes',
+                'wpj_run_queues'
+            );
+        }
     }
 
     public function addQueue(string $name, Connection $connection)
