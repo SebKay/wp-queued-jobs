@@ -22,12 +22,28 @@ class App
         $this->setupWpCron();
     }
 
+    protected function getDefaultCronTimeout()
+    {
+        if (\defined('WP_CRON_LOCK_TIMEOUT')) {
+            return \WP_CRON_LOCK_TIMEOUT;
+        }
+
+        return 60;
+    }
+
     protected function setupWpCron()
     {
-        \add_filter('cron_schedules', function ($schedules) {
-            $schedules['five_minutes'] = [
-                'interval' => 300,
-                'display'  => 'Every Five Minutes',
+        $default_cron_in_minutes = \intval(\gmdate('i', $this->getDefaultCronTimeout()));
+
+        \add_filter('cron_schedules', function ($schedules) use ($default_cron_in_minutes) {
+            $schedules['one_minute'] = [
+                'interval' => 60,
+                'display'  => 'Every Minute',
+            ];
+
+            $schedules['lowest_cron_possible'] = [
+                'interval' => $this->getDefaultCronTimeout(),
+                'display'  => "{$default_cron_in_minutes} minute(s)",
             ];
 
             return $schedules;
@@ -38,11 +54,11 @@ class App
         });
 
         if (!\wp_next_scheduled('wpj_run_queues')) {
-            \wp_schedule_event(
-                \strtotime('+ 5 minutes'),
-                'five_minutes',
-                'wpj_run_queues'
-            );
+            // \wp_schedule_event(
+            //     \strtotime("+ {$default_cron_in_minutes} minutes"),
+            //     'lowest_cron_possible',
+            //     'wpj_run_queues'
+            // );
         }
     }
 
