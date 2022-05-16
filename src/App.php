@@ -3,10 +3,11 @@
 namespace WpQueuedJobs;
 
 use WpQueuedJobs\Connections\WordPressConnection;
+use WpQueuedJobs\Cron\Cronable as CronCronable;
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
 
-class App
+class App extends CronCronable
 {
     /**
      * @var Queue[]
@@ -15,6 +16,9 @@ class App
 
     protected string $defaultQueue = 'default';
 
+    protected bool $cron_enabled       = false;
+    protected string $cron_action_name = 'run_queues';
+
     public function __construct()
     {
         $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
@@ -22,18 +26,9 @@ class App
         $this->setupWpCron();
     }
 
-    protected function getDefaultCronTimeout()
-    {
-        if (\defined('WP_CRON_LOCK_TIMEOUT')) {
-            return \WP_CRON_LOCK_TIMEOUT;
-        }
-
-        return 60;
-    }
-
     protected function setupWpCron()
     {
-        $default_cron_in_minutes = \intval(\gmdate('i', $this->getDefaultCronTimeout()));
+        $default_cron_in_minutes = \intval(\gmdate('i', Utilities::defaultCronTimeout()));
 
         \add_filter('cron_schedules', function ($schedules) use ($default_cron_in_minutes) {
             $schedules['one_minute'] = [
@@ -42,23 +37,27 @@ class App
             ];
 
             $schedules['lowest_cron_possible'] = [
-                'interval' => $this->getDefaultCronTimeout(),
+                'interval' => Utilities::defaultCronTimeout(),
                 'display'  => "{$default_cron_in_minutes} minute(s)",
             ];
 
             return $schedules;
         });
 
-        \add_action('wpj_run_queues', function () {
-            $this->run();
-        });
+        if ($this->cronEnabled()) {
+            \add_action($this->cronName(), function () {
+                $this->run();
+            });
 
-        if (!\wp_next_scheduled('wpj_run_queues')) {
-            // \wp_schedule_event(
-            //     \strtotime("+ {$default_cron_in_minutes} minutes"),
-            //     'lowest_cron_possible',
-            //     'wpj_run_queues'
-            // );
+            if (!\wp_next_scheduled($this->cronName())) {
+                \wp_schedule_event(
+                    \strtotime("+ {$default_cron_in_minutes} minutes"),
+                    'lowest_cron_possible',
+                    $this->cronName()
+                );
+            }
+        } else {
+            \wp_unschedule_event(\wp_next_scheduled($this->cronName()), $this->cronName());
         }
     }
 
