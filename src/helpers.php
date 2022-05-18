@@ -1,6 +1,7 @@
 <?php
 
 use WpQueuedJobs\App;
+use WpQueuedJobs\Utilities;
 
 if (!function_exists('wpj')) {
     function wpj(): App
@@ -19,4 +20,15 @@ if (function_exists('add_action')) {
     add_action('init', function () {
         wpj();
     }, 10, 0);
+}
+
+if (function_exists('add_filter')) {
+    \add_filter('cron_schedules', function ($schedules) {
+        $schedules['lowest_cron_possible'] = [
+            'interval' => Utilities::defaultCronTimeout(),
+            'display'  => Utilities::defaultCronInMinutes() . " minute(s)",
+        ];
+
+        return $schedules;
+    }, 10, 1);
 }

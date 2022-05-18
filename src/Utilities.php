@@ -12,4 +12,9 @@ class Utilities
 
         return 60;
     }
+
+    public static function defaultCronInMinutes()
+    {
+        return \intval(\gmdate('i', self::defaultCronTimeout()));
+    }
 }
