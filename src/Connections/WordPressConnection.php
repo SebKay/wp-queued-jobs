@@ -2,7 +2,6 @@
 
 namespace WpQueuedJobs\Connections;
 
-use Ramsey\Uuid\Uuid;
 use WpQueuedJobs\Jobs\Job;
 
 class WordPressConnection extends Connection
