@@ -13,22 +13,23 @@ class ArrayConnection extends Connection
         $this->jobs[] = $job;
     }
 
-    public function getJobs()
+    public function getJobs(): array
     {
         return $this->jobs;
     }
 
-    public function clearJob(string $uuid)
+    public function clearJob(string $uuid): bool
     {
-        $jobs = parent::clearJob($uuid);
+        $jobs = $this->getJobs();
+
+        foreach ($jobs as $job_key => $job) {
+            if ($job->getUuid() === $uuid) {
+                unset($jobs[$job_key]);
+            }
+        }
 
         $this->jobs = $jobs;
 
-        return $jobs;
-    }
-
-    public function clearJobs()
-    {
-        $this->jobs = [];
+        return true;
     }
 }

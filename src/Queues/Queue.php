@@ -32,9 +32,14 @@ class Queue
         return $this;
     }
 
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
+
     public function hasJobs()
     {
-        return !empty($this->jobs);
+        return !empty($this->getJobs());
     }
 
     public function dispatch()
@@ -48,13 +53,15 @@ class Queue
 
     public function run()
     {
-        if (!$this->connection->hasJobs()) {
+        $jobs = $this->connection->getJobs();
+
+        if (!$jobs) {
             return;
         }
 
         \ray('Running jobs in queue: ' . $this->name);
 
-        foreach ($this->connection->getJobs() as $job) {
+        foreach ($jobs as $job) {
             $job->handle();
 
             $this->connection->clearJob($job->getUuid());

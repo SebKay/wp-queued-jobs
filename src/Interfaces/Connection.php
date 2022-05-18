@@ -8,11 +8,7 @@ interface Connection
 {
     public function saveJob(Job $jobs);
 
-    public function getJobs();
+    public function getJobs(): array;
 
-    public function hasJobs();
-
-    public function clearJob(string $uuid);
-
-    public function clearJobs();
+    public function clearJob(string $uuid): bool;
 }

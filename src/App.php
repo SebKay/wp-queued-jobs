@@ -3,11 +3,11 @@
 namespace WpQueuedJobs;
 
 use WpQueuedJobs\Connections\WordPressConnection;
-use WpQueuedJobs\Cron\Cronable as CronCronable;
+use WpQueuedJobs\Cron\Cronable;
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
 
-class App extends CronCronable
+class App extends Cronable
 {
     /**
      * @var Queue[]
@@ -16,7 +16,7 @@ class App extends CronCronable
 
     protected string $defaultQueue = 'default';
 
-    protected bool $cron_enabled       = false;
+    protected bool $cron_enabled       = true;
     protected string $cron_action_name = 'run_queues';
 
     public function __construct()
@@ -61,13 +61,20 @@ class App extends CronCronable
         }
     }
 
+    /**
+     * @return Queue|null
+     */
     public function addQueue(string $name, Connection $connection)
     {
-        if ($name !== $this->defaultQueue) {
-            $this->queues[] = new Queue($name, $connection);
+        if ($name == $this->defaultQueue) {
+            return $this->getDefaultQueue();
         }
 
-        return $this;
+        $queue = new Queue($name, $connection);
+
+        $this->queues[] = $queue;
+
+        return $queue;
     }
 
     /**

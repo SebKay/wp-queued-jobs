@@ -9,29 +9,20 @@ class WordPressConnection extends Connection
 {
     public function saveJob(Job $job)
     {
-        $jobs = $this->getJobs();
-
-        $jobs[] = $job;
-
-        \update_option("wpj_jobs_{$this->uuid}", \serialize($jobs));
+        \update_option("wpj_job_{$job->getUuid()}", $job);
     }
 
-    public function getJobs()
+    public function getJobs(): array
     {
-        return \unserialize(\get_option("wpj_jobs_{$this->uuid}", ''));
+        global $wpdb;
+
+        return \array_map(function ($result) {
+            return \unserialize($result->option_value);
+        }, $wpdb->get_results("SELECT * FROM wp_options WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id") ?: []);
     }
 
-    public function clearJob(string $uuid)
+    public function clearJob(string $uuid): bool
     {
-        $jobs = parent::clearJob($uuid);
-
-        \update_option("wpj_jobs_{$this->uuid}", \serialize($jobs));
-
-        return $jobs;
-    }
-
-    public function clearJobs()
-    {
-        \delete_option("wpj_jobs_{$this->uuid}");
+        return \delete_option("wpj_job_{$uuid}");
     }
 }
