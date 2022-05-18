@@ -2,9 +2,12 @@
 
 namespace WpQueuedJobs;
 
+use WpQueuedJobs\Connections\WordPressConnection;
+use WpQueuedJobs\Cron\Cronable;
+use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Queues\Queue;
 
-class App
+class App extends Cronable
 {
     /**
      * @var Queue[]
@@ -13,18 +16,65 @@ class App
 
     protected string $defaultQueue = 'default';
 
+    protected bool $cron_enabled       = true;
+    protected string $cron_action_name = 'run_queues';
+
     public function __construct()
     {
-        $this->queues[] = new Queue($this->defaultQueue);
+        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
+
+        $this->setupWpCron();
     }
 
-    public function addQueue(string $name)
+    protected function setupWpCron()
     {
-        if ($name !== $this->defaultQueue) {
-            $this->queues[] = new Queue($name);
+        $default_cron_in_minutes = \intval(\gmdate('i', Utilities::defaultCronTimeout()));
+
+        \add_filter('cron_schedules', function ($schedules) use ($default_cron_in_minutes) {
+            $schedules['one_minute'] = [
+                'interval' => 60,
+                'display'  => 'Every Minute',
+            ];
+
+            $schedules['lowest_cron_possible'] = [
+                'interval' => Utilities::defaultCronTimeout(),
+                'display'  => "{$default_cron_in_minutes} minute(s)",
+            ];
+
+            return $schedules;
+        });
+
+        if ($this->cronEnabled()) {
+            \add_action($this->cronName(), function () {
+                $this->run();
+            });
+
+            if (!\wp_next_scheduled($this->cronName())) {
+                \wp_schedule_event(
+                    \strtotime("+ {$default_cron_in_minutes} minutes"),
+                    'lowest_cron_possible',
+                    $this->cronName()
+                );
+            }
+        } else {
+            \wp_unschedule_event(\wp_next_scheduled($this->cronName()), $this->cronName());
+        }
+    }
+
+    /**
+     * @return Queue|null
+     */
+    public function addQueue(string $name, Connection $connection)
+    {
+        if ($name == $this->defaultQueue) {
+            return $this->getDefaultQueue();
         }
 
-        return $this;
+        $queue = new Queue($name, $connection);
+
+        $this->queues[] = $queue;
+
+        return $queue;
     }
 
     /**
@@ -39,11 +89,25 @@ class App
         }
     }
 
+    protected function getDefaultQueue()
+    {
+        return $this->getQueue($this->defaultQueue);
+    }
+
     public function addJob(string $class_name)
     {
         $this
-            ->getQueue($this->defaultQueue)
+            ->getDefaultQueue()
             ->addJob($class_name);
+
+        return $this;
+    }
+
+    public function dispatch()
+    {
+        $this
+            ->getDefaultQueue()
+            ->dispatch();
 
         return $this;
     }
@@ -51,9 +115,7 @@ class App
     public function run()
     {
         foreach ($this->queues as $queue) {
-            if ($queue->hasJobs()) {
-                $queue->run();
-            }
+            $queue->run();
         }
     }
 }
