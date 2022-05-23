@@ -21,11 +21,11 @@ class Logger
         );
 
         $handler = (new RotatingFileHandler(
-            \WPJ_ROOT_DIR . '/atfss-logs/general/general.log',
+            \ABSPATH . '/wp-content/wpj-logs/general/general.log',
             MonologLogger::DEBUG
         ))->setFormatter($formatter);
 
-        $this->general = (new MonologLogger('ATFSS General'))->pushHandler($handler);
+        $this->general = (new MonologLogger('WPJ General'))->pushHandler($handler);
     }
 
     public function general(): \Monolog\Logger

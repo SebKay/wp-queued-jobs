@@ -9,6 +9,8 @@ use WpQueuedJobs\Queues\Queue;
 
 class App extends Cronable
 {
+    protected Logger $logger;
+
     /**
      * @var Queue[]
      */
@@ -22,6 +24,8 @@ class App extends Cronable
     public function __construct()
     {
         parent::__construct();
+
+        $this->logger = new Logger();
 
         $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
     }
@@ -100,6 +104,8 @@ class App extends Cronable
 
     public function run()
     {
+        $this->logger->general()->info('Running queues');
+
         foreach ($this->queues as $queue) {
             $queue->run();
         }
