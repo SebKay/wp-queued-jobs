@@ -18,6 +18,7 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
+        "monolog/monolog": "^2.6",
         "php-stubs/wordpress-stubs": "^5.9",
         "ramsey/uuid": "^4.3"
     },
