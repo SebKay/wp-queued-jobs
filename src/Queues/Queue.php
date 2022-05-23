@@ -49,7 +49,7 @@ class Queue
 
     public function dispatch()
     {
-        $this->logger->general()->info("Dispatching jobs to queue.", [
+        $this->logger->general()->info("Dispatching jobs.", [
             'queue' => $this->name,
             'jobs'  => count($this->jobs),
         ]);
@@ -69,15 +69,28 @@ class Queue
             return;
         }
 
-        $this->logger->general()->info("Running jobs in queue.", [
+        $this->logger->general()->info("Started running jobs.", [
             'queue' => $this->name,
             'jobs'  => count($jobs),
         ]);
 
         foreach ($jobs as $job) {
-            $job->handle();
-
-            $this->connection->clearJob($job->getUuid());
+            try {
+                $job->handle();
+            } catch (\Exception $e) {
+                $this->logger->general()->error("Error running job.", [
+                    'queue'     => $this->name,
+                    'job'       => $job,
+                    'exception' => $e,
+                ]);
+            } finally {
+                $this->connection->clearJob($job->getUuid());
+            }
         }
+
+        $this->logger->general()->info("Finished running jobs.", [
+            'queue' => $this->name,
+            'jobs'  => count($jobs),
+        ]);
     }
 }
