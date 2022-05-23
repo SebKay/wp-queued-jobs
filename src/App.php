@@ -27,7 +27,7 @@ class App extends Cronable
 
         $this->logger = new Logger();
 
-        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
+        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection(), $this->logger);
     }
 
     protected function setupWpCron()
@@ -60,7 +60,7 @@ class App extends Cronable
             return $this->getDefaultQueue();
         }
 
-        $queue = new Queue($name, $connection);
+        $queue = new Queue($name, $connection, $this->logger);
 
         $this->queues[] = $queue;
 
@@ -104,8 +104,6 @@ class App extends Cronable
 
     public function run()
     {
-        $this->logger->general()->info('Running queues');
-
         foreach ($this->queues as $queue) {
             $queue->run();
         }

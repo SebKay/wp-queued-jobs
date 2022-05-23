@@ -4,16 +4,21 @@ namespace WpQueuedJobs\Queues;
 
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Jobs\Job;
+use WpQueuedJobs\Logger;
 
 class Queue
 {
+    protected Logger $logger;
+
     public string $name;
     protected array $jobs = [];
 
     protected Connection $connection;
 
-    public function __construct(string $name, Connection $connection)
+    public function __construct(string $name, Connection $connection, Logger $logger)
     {
+        $this->logger = $logger;
+
         $this->name       = $name;
         $this->connection = $connection;
     }
@@ -44,6 +49,11 @@ class Queue
 
     public function dispatch()
     {
+        $this->logger->general()->info("Dispatching jobs to queue.", [
+            'queue' => $this->name,
+            'jobs'  => count($this->jobs),
+        ]);
+
         foreach ($this->jobs as $job_key => $job) {
             $this->connection->saveJob($job);
 
@@ -58,6 +68,11 @@ class Queue
         if (!$jobs) {
             return;
         }
+
+        $this->logger->general()->info("Running jobs in queue.", [
+            'queue' => $this->name,
+            'jobs'  => count($jobs),
+        ]);
 
         foreach ($jobs as $job) {
             $job->handle();
