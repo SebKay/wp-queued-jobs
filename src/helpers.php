@@ -3,6 +3,8 @@
 use WpQueuedJobs\App;
 use WpQueuedJobs\Utilities;
 
+const WPJ_ROOT_DIR = get_home_path();
+
 if (!function_exists('wpj')) {
     function wpj(): App
     {
