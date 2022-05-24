@@ -4,16 +4,21 @@ namespace WpQueuedJobs\Queues;
 
 use WpQueuedJobs\Interfaces\Connection;
 use WpQueuedJobs\Jobs\Job;
+use WpQueuedJobs\Logger;
 
 class Queue
 {
+    protected Logger $logger;
+
     public string $name;
     protected array $jobs = [];
 
     protected Connection $connection;
 
-    public function __construct(string $name, Connection $connection)
+    public function __construct(string $name, Connection $connection, Logger $logger)
     {
+        $this->logger = $logger;
+
         $this->name       = $name;
         $this->connection = $connection;
     }
@@ -44,6 +49,11 @@ class Queue
 
     public function dispatch()
     {
+        $this->logger->general()->info("Dispatching jobs.", [
+            'queue' => $this->name,
+            'jobs'  => count($this->jobs),
+        ]);
+
         foreach ($this->jobs as $job_key => $job) {
             $this->connection->saveJob($job);
 
@@ -59,10 +69,28 @@ class Queue
             return;
         }
 
-        foreach ($jobs as $job) {
-            $job->handle();
+        $this->logger->general()->info("Started running jobs.", [
+            'queue' => $this->name,
+            'jobs'  => count($jobs),
+        ]);
 
-            $this->connection->clearJob($job->getUuid());
+        foreach ($jobs as $job) {
+            try {
+                $job->handle();
+            } catch (\Exception $e) {
+                $this->logger->general()->error("Error running job.", [
+                    'queue'     => $this->name,
+                    'job'       => $job,
+                    'exception' => $e,
+                ]);
+            } finally {
+                $this->connection->clearJob($job->getUuid());
+            }
         }
+
+        $this->logger->general()->info("Finished running jobs.", [
+            'queue' => $this->name,
+            'jobs'  => count($jobs),
+        ]);
     }
 }

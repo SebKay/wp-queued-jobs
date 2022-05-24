@@ -4,18 +4,22 @@ namespace WpQueuedJobs\Cron;
 
 abstract class Cronable
 {
-    protected bool $cron_enabled = true;
+    protected bool $cronEnabled = true;
 
-    protected string $cron_action_prefix = 'wpj_';
-    protected string $cron_action_name = '';
+    protected string $cronActionPrefix = 'wpj_';
+    protected string $cronActionName   = '';
+
+    public function __construct()
+    {
+        $this->setupWpCron();
+    }
 
     public function cronName()
     {
-        return $this->cron_action_prefix . $this->cron_action_name;
+        return $this->cronActionPrefix . $this->cronActionName;
     }
 
-    public function cronEnabled()
+    protected function setupWpCron()
     {
-        return $this->cron_enabled;
     }
 }

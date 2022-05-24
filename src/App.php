@@ -9,6 +9,8 @@ use WpQueuedJobs\Queues\Queue;
 
 class App extends Cronable
 {
+    protected Logger $logger;
+
     /**
      * @var Queue[]
      */
@@ -16,35 +18,23 @@ class App extends Cronable
 
     protected string $defaultQueue = 'default';
 
-    protected bool $cron_enabled       = true;
-    protected string $cron_action_name = 'run_queues';
+    protected bool $cronEnabled      = true;
+    protected string $cronActionName = 'run_queues';
 
     public function __construct()
     {
-        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection());
+        parent::__construct();
 
-        $this->setupWpCron();
+        $this->logger = new Logger();
+
+        $this->queues[] = new Queue($this->defaultQueue, new WordPressConnection(), $this->logger);
     }
 
     protected function setupWpCron()
     {
-        $default_cron_in_minutes = \intval(\gmdate('i', Utilities::defaultCronTimeout()));
+        if ($this->cronEnabled) {
+            $default_cron_in_minutes = Utilities::defaultCronInMinutes();
 
-        \add_filter('cron_schedules', function ($schedules) use ($default_cron_in_minutes) {
-            $schedules['one_minute'] = [
-                'interval' => 60,
-                'display'  => 'Every Minute',
-            ];
-
-            $schedules['lowest_cron_possible'] = [
-                'interval' => Utilities::defaultCronTimeout(),
-                'display'  => "{$default_cron_in_minutes} minute(s)",
-            ];
-
-            return $schedules;
-        });
-
-        if ($this->cronEnabled()) {
             \add_action($this->cronName(), function () {
                 $this->run();
             });
@@ -70,7 +60,7 @@ class App extends Cronable
             return $this->getDefaultQueue();
         }
 
-        $queue = new Queue($name, $connection);
+        $queue = new Queue($name, $connection, $this->logger);
 
         $this->queues[] = $queue;
 
