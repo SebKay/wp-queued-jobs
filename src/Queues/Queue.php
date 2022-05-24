@@ -15,12 +15,16 @@ class Queue
 
     protected Connection $connection;
 
+    protected string $lockName = '';
+
     public function __construct(string $name, Connection $connection, Logger $logger)
     {
         $this->logger = $logger;
 
         $this->name       = $name;
         $this->connection = $connection;
+
+        $this->lockName = "wpj_lock_queue_{$this->name}";
     }
 
     public function setConnection(Connection $connection)
@@ -61,13 +65,30 @@ class Queue
         }
     }
 
+    protected function lock()
+    {
+        \set_transient($this->lockName, \time(), 0);
+    }
+
+    protected function unlock()
+    {
+        \delete_transient($this->lockName);
+    }
+
+    protected function isLocked()
+    {
+        return \get_transient($this->lockName) !== false;
+    }
+
     public function run()
     {
         $jobs = $this->connection->getJobs();
 
-        if (!$jobs) {
+        if (!$jobs || $this->isLocked()) {
             return;
         }
+
+        $this->lock();
 
         $this->logger->general()->info("Started running jobs.", [
             'queue' => $this->name,
@@ -87,6 +108,8 @@ class Queue
                 $this->connection->clearJob($job->getUuid());
             }
         }
+
+        $this->unlock();
 
         $this->logger->general()->info("Finished running jobs.", [
             'queue' => $this->name,
