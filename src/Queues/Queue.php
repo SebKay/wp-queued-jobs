@@ -32,10 +32,10 @@ class Queue
         $this->connection = $connection;
     }
 
-    public function addJob(string $class_name)
+    public function addJob(string $class_name, $data = null)
     {
         if (\class_exists($class_name) && \in_array(Job::class, \class_parents($class_name))) {
-            $this->jobs[] = new $class_name();
+            $this->jobs[] = new $class_name($data);
         }
 
         return $this;

@@ -9,9 +9,13 @@ abstract class Job implements Queueable
 {
     protected string $uuid;
 
-    public function __construct()
+    protected $data = null;
+
+    public function __construct($data = null)
     {
         $this->uuid = Uuid::uuid4();
+
+        $this->data = $data;
     }
 
     public function getUuid()
