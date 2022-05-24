@@ -19,7 +19,8 @@ class Queue
     {
         $this->logger = $logger;
 
-        $this->name       = $name;
+        $this->name = $name;
+
         $this->connection = $connection;
     }
 
@@ -28,10 +29,10 @@ class Queue
         $this->connection = $connection;
     }
 
-    public function addJob(string $class_name)
+    public function addJob(string $class_name, $data = null)
     {
         if (\class_exists($class_name) && \in_array(Job::class, \class_parents($class_name))) {
-            $this->jobs[] = new $class_name();
+            $this->jobs[] = new $class_name($data);
         }
 
         return $this;
@@ -65,9 +66,11 @@ class Queue
     {
         $jobs = $this->connection->getJobs();
 
-        if (!$jobs) {
+        if (!$jobs || $this->connection->isLocked()) {
             return;
         }
+
+        $this->connection->lock();
 
         $this->logger->general()->info("Started running jobs.", [
             'queue' => $this->name,
@@ -87,6 +90,8 @@ class Queue
                 $this->connection->clearJob($job->getUuid());
             }
         }
+
+        $this->connection->unlock();
 
         $this->logger->general()->info("Finished running jobs.", [
             'queue' => $this->name,

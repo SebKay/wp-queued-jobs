@@ -54,11 +54,13 @@ class App extends Cronable
     /**
      * @return Queue|null
      */
-    public function addQueue(string $name, Connection $connection)
+    public function addQueue(string $name, Connection $connection = null)
     {
         if ($name == $this->defaultQueue) {
             return $this->getDefaultQueue();
         }
+
+        $connection = $connection ?? new WordPressConnection();
 
         $queue = new Queue($name, $connection, $this->logger);
 
@@ -84,11 +86,11 @@ class App extends Cronable
         return $this->getQueue($this->defaultQueue);
     }
 
-    public function addJob(string $class_name)
+    public function addJob(string $class_name, $data = null)
     {
         $this
             ->getDefaultQueue()
-            ->addJob($class_name);
+            ->addJob($class_name, $data);
 
         return $this;
     }
