@@ -1,5 +1,7 @@
 # WP Queued Jobs
 
+[![Validate PHP](https://github.com/SebKay/wp-queued-jobs/actions/workflows/validate-php.yml/badge.svg)](https://github.com/SebKay/wp-queued-jobs/actions/workflows/validate-php.yml)
+
 A [Laravel](https://laravel.com/)-like queue system for [WordPress](https://wordpress.org/).
 
 Easily create background jobs for things like sending emails or importing large amounts of data. All with a fluent API.
