@@ -14,9 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Composer access
-        run: composer config -g github-oauth.github.com ${{ secrets.ORG_GH_ACCESS_TOKEN }}
-
       - name: Get Composer dependencies
         id: cache-vendor
         uses: actions/cache@v3
