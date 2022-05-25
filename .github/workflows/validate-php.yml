@@ -68,5 +68,5 @@ jobs:
         run: |
           echo "No dependencies were found."
           exit 1
-      - name: Run Static Analyser (Psalm)
+      - name: Run Static Analyser (PHPStan)
         run: composer analyse
