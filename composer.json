@@ -24,6 +24,7 @@
     "require-dev": {
         "php-stubs/wordpress-globals": "^0.2.0",
         "php-stubs/wordpress-stubs": "^5.9",
+        "phpstan/phpstan": "^1.7",
         "spatie/ray": "^1.34"
     },
     "config": {
