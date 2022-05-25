@@ -28,7 +28,7 @@
         "spatie/ray": "^1.34"
     },
     "scripts": {
-        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon"
+        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G"
     },
     "config": {
         "sort-packages": true
