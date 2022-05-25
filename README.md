@@ -2,7 +2,7 @@
 
 A [Laravel](https://laravel.com/)-like queue system for [WordPress](https://wordpress.org/).
 
-Easily create background jobs things like sending emails or importing data. All via a fluent API.
+Easily create background jobs for things like sending emails or importing large amounts of data. All with a fluent API.
 
 I highly recommend using a plugin like [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/) so you can easily see, and manually run, cron jobs from the WordPress dashboard.
 
@@ -45,11 +45,11 @@ wpj()
     ->dispatch();
 ```
 
-Anything passed as the second parameter to `addJob(JOB, DATA)` will be available in the `handle()` method of the job as `$this->data`.
+Anything passed as the second parameter to `addJob()` will be available in the `handle()` method of the job (and the rest of the class) as `$this->data`.
 
 The data can be anything you want. A `string`, `array`, `integer`, `class` etc...
 
-The "queue worker" will check for new jobs every minute. If there are new jobs, it will run them.
+The "queue worker" will look for new jobs every 1 minute and run them (if there are any).
 
 The system runs on a "first-in first-out" basis. So whatever gets dispatched first will be run first.
 
@@ -59,33 +59,10 @@ As the lowest cron time in WordPress defaults to 1 minute, jobs scheduled to run
 
 The point of background jobs is that they run in the background, not immediately, so they should never be used for time-sensitive tasks.
 
-## Working example #1
+## Example #1 (Send Email)
 
-1. Create a custom cron event where we add two jobs.
-2. Add two jobs and dispatch them to the queue.
-3. Schedule the cron even to run once per day at 6am, starting tomorrow.
-
-```php
-add_action('custom_cron_event', function () {
-    wpj()
-        ->addJob(BackgroundJob1::class, 'Data for background job 1.')
-        ->addJob(BackgroundJob2::class, ['data' => 'Data for background job 2.'])
-        ->dispatch();
-}, 10, 0);
-
-if (!\wp_next_scheduled('custom_cron_event')) {
-    \wp_schedule_event(
-        \strtotime("+ 1 days 6am"),
-        'daily',
-        'custom_cron_event'
-    );
-}
-```
-
-## Working example #2
-
-1. Load a URL.
-2. Add a "send welcome email" job and dispatch it to the queue.
+1. Load the "successful registration" page template.
+2. Add the "send welcome email" job and dispatch it to the queue.
 
 ```php
 add_action('template_redirect', function () {
@@ -94,17 +71,41 @@ add_action('template_redirect', function () {
     }
 
     wpj()
-        ->addJob(SendWelcomeEmail::class, wp_get_current_user())
+        ->addJob(SendWelcomeEmailJob::class, wp_get_current_user())
         ->dispatch();
 }, 10, 0);
 ```
 
+## Example #2 (Import Posts from API)
+
+1. Create a custom cron event.
+2. Add two jobs and dispatch them to the queue.
+3. Each job is given an `offset` and a `max` so the same posts aren't imported twice.
+4. Schedule the cron even to run once per day at 6am, starting tomorrow.
+
+```php
+add_action('import_api_posts', function () {
+    wpj()
+        ->addJob(ImportApiPostsJob::class, ['offset' => 0, 'max' => 100])
+        ->addJob(ImportApiPostsJob::class, ['offset' => 100, 'max' => 100])
+        ->dispatch();
+}, 10, 0);
+
+if (!\wp_next_scheduled('import_api_posts')) {
+    \wp_schedule_event(
+        \strtotime("+ 1 days 6am"),
+        'daily',
+        'import_api_posts'
+    );
+}
+```
+
 ## Why
 
-Unfortunatetly there's no such concept of a "queue worker" in WordPress due to the way it's distrubuted. At it's core WordPress is just a bunch of PHP files. There's no command line runner, such as Artisan in Laravel.
+Unfortunatetly there's no concept of a "queue worker" in WordPress. At it's core WordPress is just a bunch of PHP files. There's no command line runner, such as [Artisan](https://laravel.com/docs/9.x/artisan) in Laravel.
 
-Although the WordPress CLI exists, most people host their sites on shared hosting, so that isn't an option.
+Although the [WordPress CLI](https://wp-cli.org/) exists, a lot of people host their sites on shared hosting, so that isn't an option.
 
 This package tries to circumvent that by utilising the WordPress Cron system. It runs a WP Cron task every minute to see if there are new jobs to run. If there are then it locks the connection to the database, runs the jobs, then unlocks the connection.
 
-It's important to lock the queue to prevent the same queue from running jobs multiple times. The queue runner checks if there are new jobs every minute, so if any queue takes longer than a minute to finish it won't overlap.
+It's important to lock the queue to prevent the same jobs from running multiple times. The "queue worker" checks if there are new jobs every minute, so if any queue takes longer than a minute to finish jobs won't overlap.
