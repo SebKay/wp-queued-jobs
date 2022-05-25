@@ -1,0 +1,35 @@
+version: 2
+
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    allow:
+      - dependency-type: "direct"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "GitHub Actions"
+      include: "scope"
+    reviewers:
+      - "SebKay"
+
+  # Composer dependencies
+  - package-ecosystem: "composer"
+    directory: "/"
+    allow:
+      - dependency-type: "direct"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "Composer"
+      include: "scope"
+    reviewers:
+      - "SebKay"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
