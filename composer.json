@@ -29,6 +29,7 @@
         "squizlabs/php_codesniffer": "^3.6"
     },
     "scripts": {
+        "lint": "./vendor/bin/phpcs ./ --extensions=php --standard=PSR12 --ignore=vendor/ --exclude=Generic.Files.LineLength,PSR1.Files.SideEffects",
         "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G"
     },
     "config": {
