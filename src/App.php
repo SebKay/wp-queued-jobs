@@ -70,7 +70,7 @@ class App extends Cronable
     }
 
     /**
-     * @return Queue|null
+     * @return Queue|void
      */
     public function getQueue(string $name)
     {
