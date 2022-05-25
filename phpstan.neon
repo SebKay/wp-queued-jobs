@@ -1,0 +1,9 @@
+parameters:
+    level: 5
+    scanFiles:
+        - vendor/php-stubs/wordpress-globals/wordpress-globals.php
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    bootstrapFiles:
+        - inc/helpers.php
+    paths:
+        - src
