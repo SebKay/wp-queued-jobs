@@ -4,7 +4,7 @@ namespace WPTS\Tests\Integration;
 
 use WPTS\Tests\Jobs\ExampleJob;
 
-class ExampleTest extends IntegrationTest
+class AppTest extends IntegrationTest
 {
     public function setUp(): void
     {
@@ -24,9 +24,12 @@ class ExampleTest extends IntegrationTest
     {
         wpj()
             ->addJob(ExampleJob::class)
+            ->addJob(ExampleJob::class)
+            ->addJob(ExampleJob::class)
             ->dispatch();
 
         $this->assertNotEmpty($this->get_jobs_from_database());
+        $this->assertCount(3, \count($this->get_jobs_from_database()));
     }
 
     public function test_job_gets_pushed_to_database_using_custom_queue()
@@ -34,8 +37,11 @@ class ExampleTest extends IntegrationTest
         wpj()
             ->addQueue('custom')
             ->addJob(ExampleJob::class)
+            ->addJob(ExampleJob::class)
+            ->addJob(ExampleJob::class)
             ->dispatch();
 
         $this->assertNotEmpty($this->get_jobs_from_database());
+        $this->assertCount(3, \count($this->get_jobs_from_database()));
     }
 }
