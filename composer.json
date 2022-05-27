@@ -35,7 +35,7 @@
         "squizlabs/php_codesniffer": "^3.6"
     },
     "scripts": {
-        "lint": "./vendor/bin/phpcs ./ --extensions=php --standard=PSR12 --ignore=vendor/ --exclude=Generic.Files.LineLength,PSR1.Files.SideEffects",
+        "lint": "./vendor/bin/phpcs ./ --extensions=php --standard=PSR12 --ignore=tests/,vendor/ --exclude=Generic.Files.LineLength,PSR1.Files.SideEffects",
         "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G",
         "tests:setup": "./vendor/bin/touchstone setup --db-host=127.0.0.1 --db-name=wp_testing_tests --db-user=root --skip-db-creation=false",
         "tests:run": "./vendor/bin/touchstone test"
