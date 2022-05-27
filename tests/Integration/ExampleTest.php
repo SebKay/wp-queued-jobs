@@ -2,16 +2,25 @@
 
 namespace WPTS\Tests\Integration;
 
+use WPTS\Tests\Jobs\ExampleJob;
+
 class ExampleTest extends IntegrationTest
 {
-    public function test_post_title_was_added()
+    public function setUp(): void
     {
-        $post_id = $this->factory()->post->create([
-            'post_title' => 'Example post title',
-        ]);
+        parent::setUp();
 
-        $post = \get_post($post_id);
+        wpj();
+    }
 
-        $this->assertSame('Example post title', $post->post_title);
+    public function test_job_gets_pushed_to_database()
+    {
+        wpj()
+            ->addJob(ExampleJob::class)
+            ->dispatch();
+
+        global $wpdb;
+
+        $this->assertNotEmpty($wpdb->get_results("SELECT * FROM wptests_options WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id"));
     }
 }
