@@ -13,14 +13,29 @@ class ExampleTest extends IntegrationTest
         wpj();
     }
 
+    protected function get_jobs_from_database()
+    {
+        global $wpdb;
+
+        return $wpdb->get_results("SELECT * FROM wptests_options WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id");
+    }
+
     public function test_job_gets_pushed_to_database()
     {
         wpj()
             ->addJob(ExampleJob::class)
             ->dispatch();
 
-        global $wpdb;
+        $this->assertNotEmpty($this->get_jobs_from_database());
+    }
 
-        $this->assertNotEmpty($wpdb->get_results("SELECT * FROM wptests_options WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id"));
+    public function test_job_gets_pushed_to_database_using_custom_queue()
+    {
+        wpj()
+            ->addQueue('custom')
+            ->addJob(ExampleJob::class)
+            ->dispatch();
+
+        $this->assertNotEmpty($this->get_jobs_from_database());
     }
 }
