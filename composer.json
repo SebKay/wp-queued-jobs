@@ -2,6 +2,12 @@
     "name": "sebkay/wp-queued-jobs",
     "description": "A Laravel-like queue system for WordPress.",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Seb Kay",
+            "email": "seb@sebkay.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "WpQueuedJobs\\": "src/"
@@ -10,12 +16,6 @@
             "inc/helpers.php"
         ]
     },
-    "authors": [
-        {
-            "name": "Seb Kay",
-            "email": "seb@sebkay.com"
-        }
-    ],
     "require": {
         "php": ">=7.4|>=8.0",
         "monolog/monolog": "<=2.3.5",
@@ -31,7 +31,8 @@
     },
     "scripts": {
         "lint": "./vendor/bin/phpcs ./ --extensions=php --standard=PSR12 --ignore=vendor/ --exclude=Generic.Files.LineLength,PSR1.Files.SideEffects",
-        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G"
+        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G",
+        "tests:setup": "./vendor/bin/touchstone setup --db-host=127.0.0.1 --db-name=wp_testing_tests --db-user=root --skip-db-creation=false"
     },
     "config": {
         "sort-packages": true
