@@ -3216,16 +3216,16 @@
         },
         {
             "name": "spatie/ray",
-            "version": "1.34.2",
+            "version": "1.34.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/ray.git",
-                "reference": "ef5836b44f7bc4a0162f1a590cbaf33e8ab655dd"
+                "reference": "17654b955e189c646405dececb482c833e8a9a0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/ray/zipball/ef5836b44f7bc4a0162f1a590cbaf33e8ab655dd",
-                "reference": "ef5836b44f7bc4a0162f1a590cbaf33e8ab655dd",
+                "url": "https://api.github.com/repos/spatie/ray/zipball/17654b955e189c646405dececb482c833e8a9a0f",
+                "reference": "17654b955e189c646405dececb482c833e8a9a0f",
                 "shasum": ""
             },
             "require": {
@@ -3234,7 +3234,7 @@
                 "php": "^7.3|^8.0",
                 "ramsey/uuid": "^3.0|^4.1",
                 "spatie/backtrace": "^1.1",
-                "spatie/macroable": "^1.0|^2.0",
+                "spatie/macroable": "^1.0",
                 "symfony/stopwatch": "^4.0|^5.1|^6.0",
                 "symfony/var-dumper": "^4.2|^5.1|^6.0"
             },
@@ -3275,7 +3275,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/ray/issues",
-                "source": "https://github.com/spatie/ray/tree/1.34.2"
+                "source": "https://github.com/spatie/ray/tree/1.34.3"
             },
             "funding": [
                 {
@@ -3287,7 +3287,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2022-04-08T13:41:27+00:00"
+            "time": "2022-05-31T08:03:35+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
