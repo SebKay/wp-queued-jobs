@@ -3013,16 +3013,16 @@
         },
         {
             "name": "sebkay/touchstone",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SebKay/touchstone.git",
-                "reference": "c4e7abfd96b251d5ef77441f5fe2fe68fd9acb4d"
+                "reference": "4069a34005c737bb1fcdad9875a9ba31903a2aa4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SebKay/touchstone/zipball/c4e7abfd96b251d5ef77441f5fe2fe68fd9acb4d",
-                "reference": "c4e7abfd96b251d5ef77441f5fe2fe68fd9acb4d",
+                "url": "https://api.github.com/repos/SebKay/touchstone/zipball/4069a34005c737bb1fcdad9875a9ba31903a2aa4",
+                "reference": "4069a34005c737bb1fcdad9875a9ba31903a2aa4",
                 "shasum": ""
             },
             "require": {
@@ -3067,9 +3067,9 @@
             "description": "A simple framework for running WordPress unit and integration tests.",
             "support": {
                 "issues": "https://github.com/SebKay/touchstone/issues",
-                "source": "https://github.com/SebKay/touchstone/tree/1.3.0"
+                "source": "https://github.com/SebKay/touchstone/tree/1.3.1"
             },
-            "time": "2022-01-31T17:47:41+00:00"
+            "time": "2022-06-10T12:25:35+00:00"
         },
         {
             "name": "sebkay/wp-unit-test-stubs",
@@ -4272,21 +4272,21 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "6964c76c7804814a842473e0c8fd15bab0f18e25"
+                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/6964c76c7804814a842473e0c8fd15bab0f18e25",
-                "reference": "6964c76c7804814a842473e0c8fd15bab0f18e25",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/11cb2199493b2f8a3b53e7f19068fc6aac760991",
+                "reference": "11cb2199493b2f8a3b53e7f19068fc6aac760991",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2 || ^8.0",
-                "symfony/polyfill-ctype": "^1.8"
+                "ext-ctype": "*",
+                "php": "^7.2 || ^8.0"
             },
             "conflict": {
                 "phpstan/phpstan": "<0.12.20",
@@ -4324,9 +4324,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/1.10.0"
+                "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
-            "time": "2021-03-09T10:59:23+00:00"
+            "time": "2022-06-03T18:03:27+00:00"
         },
         {
             "name": "wp-cli/wp-config-transformer",
