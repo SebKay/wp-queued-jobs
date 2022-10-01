@@ -1385,16 +1385,16 @@
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v5.9.3",
+            "version": "v5.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "18d56875e5078a50b8ea4bc4b20b735ca61edeee"
+                "reference": "2c18dbfc59b69949b4a4b7dbc096a684f19aaf95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/18d56875e5078a50b8ea4bc4b20b735ca61edeee",
-                "reference": "18d56875e5078a50b8ea4bc4b20b735ca61edeee",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/2c18dbfc59b69949b4a4b7dbc096a684f19aaf95",
+                "reference": "2c18dbfc59b69949b4a4b7dbc096a684f19aaf95",
                 "shasum": ""
             },
             "replace": {
@@ -1426,9 +1426,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.9.3"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.9.4"
             },
-            "time": "2022-04-06T15:33:59+00:00"
+            "time": "2022-09-30T17:24:17+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
