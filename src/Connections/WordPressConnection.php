@@ -10,9 +10,11 @@ class WordPressConnection extends Connection
     {
         global $wpdb;
 
+        $optionTable = $wpdb->prefix . 'options';
+
         return \array_map(function ($result) {
             return \unserialize($result->option_value);
-        }, $wpdb->get_results("SELECT * FROM wp_options WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id") ?: []);
+        }, $wpdb->get_results("SELECT * FROM {$optionTable} WHERE option_name LIKE 'wpj_job_%' ORDER BY option_id") ?: []);
     }
 
     public function saveJob(Job $job): bool
