@@ -1386,29 +1386,31 @@
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v5.9.6",
+            "version": "v5.9.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "6a18d938d0aef39d091505a4a35b025fb6c10098"
+                "reference": "06c51c4863659ea9e9f4c2a23293728a677cb059"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/6a18d938d0aef39d091505a4a35b025fb6c10098",
-                "reference": "6a18d938d0aef39d091505a4a35b025fb6c10098",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/06c51c4863659ea9e9f4c2a23293728a677cb059",
+                "reference": "06c51c4863659ea9e9f4c2a23293728a677cb059",
                 "shasum": ""
             },
             "require-dev": {
-                "nikic/php-parser": "< 4.12.0",
-                "php": "~7.3 || ~8.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "nikic/php-parser": "^4.13",
+                "php": "^7.4 || ~8.0.0",
                 "php-stubs/generator": "^0.8.3",
-                "phpdocumentor/reflection-docblock": "^5.3",
-                "phpstan/phpstan": "^1.10.12",
-                "phpunit/phpunit": "^9.5"
+                "phpdocumentor/reflection-docblock": "5.3",
+                "phpstan/phpstan": "^1.10.49",
+                "phpunit/phpunit": "^9.5",
+                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^0.11"
             },
             "suggest": {
                 "paragonie/sodium_compat": "Pure PHP implementation of libsodium",
-                "symfony/polyfill-php73": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
+                "symfony/polyfill-php80": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
                 "szepeviktor/phpstan-wordpress": "WordPress extensions for PHPStan"
             },
             "type": "library",
@@ -1425,9 +1427,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.9.6"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.9.9"
             },
-            "time": "2023-05-18T04:34:27+00:00"
+            "time": "2024-04-14T17:16:00+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4445,5 +4447,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
